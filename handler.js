@@ -1,18 +1,36 @@
 'use strict';
 
-module.exports.hello = async (event) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event,
-      },
-      null,
-      2
-    ),
-  };
+module.exports.handle = async (event) => {
+  const axios = require('axios');
 
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
+  //Twitterの公式アカウントのid
+  var myUserId = '783214';
+  var bearerToken = process.env['BEARER_TOKEN'];
+
+  const options =
+  {
+    headers: {
+      'Content-Type': 'application/json',
+      'charset': 'utf-8',
+      'Authorization': 'Bearer ' + bearerToken,
+    }
+  }
+
+  var url = 'https://api.twitter.com/2/users/' + myUserId + '?user.fields=public_metrics'
+
+  return axios.get(url, options)
+  .then(function(response) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify(
+        {
+          message: response.data,
+        },
+      ),
+    };
+  })
+  .catch(function(error) {
+    return error;
+  });
+
 };
