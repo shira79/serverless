@@ -24,6 +24,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
+  apiName: followerTracking
 
 plugins:
   - serverless-dotenv-plugin
@@ -35,18 +36,32 @@ package:
   exclude:
     - package.json
     - package-lock.json
+    - node_modules/**
+    - .git/**
+    - README.md
 
 custom:
   serverless-layers:
     layersDeploymentBucket: ${env:LAYER_BUCKET}
 
 functions:
-  handle:
+  testFunction:
     handler: handler.handle
     events:
      - httpApi:
          path: /test
          method: get
+  getUserId:
+    handler: getUserId.getUserId
+    events:
+     - httpApi:
+         path: /user/{userName}
+         method: get
+         request:
+            parameters:
+              paths:
+                userName: true
+         cors: true
 
 # you can add CloudFormation resource templates here
 #resources:
