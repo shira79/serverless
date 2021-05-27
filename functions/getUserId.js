@@ -2,9 +2,8 @@
 
 module.exports.handle = async (event) => {
   const axios = require('axios');
+  const utils = require('./modules/utils');
 
-  //Twitterの公式アカウントのid
-  var myUserId = '783214';
   var bearerToken = process.env['BEARER_TOKEN'];
 
   const options =
@@ -16,21 +15,15 @@ module.exports.handle = async (event) => {
     }
   }
 
-  var url = 'https://api.twitter.com/2/users/' + myUserId + '?user.fields=public_metrics'
+  var userName = event.pathParameters.userName;
+  var url = 'https://api.twitter.com/2/users/by/username/' + userName;
 
   return axios.get(url, options)
   .then(function(response) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify(
-        {
-          message: response.data,
-        },
-      ),
-    };
+    return utils.getResponseData({content: response.data})
   })
   .catch(function(error) {
-    return error;
+    return utils.getResponseData(error)
   });
 
 };

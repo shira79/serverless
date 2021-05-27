@@ -25,6 +25,18 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   apiName: followerTracking
+  region: ${env:REGION}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
 
 plugins:
   - serverless-dotenv-plugin
@@ -45,32 +57,56 @@ custom:
     layersDeploymentBucket: ${env:LAYER_BUCKET}
 
 functions:
-  testFunction:
-    handler: handler.handle
-    events:
-     - httpApi:
-         path: /test
-         method: get
   getUserId:
-    handler: getUserId.getUserId
+    handler: functions/getUserId.handle
     events:
-     - httpApi:
-         path: /user/{userName}
-         method: get
-         request:
-            parameters:
-              paths:
-                userName: true
-         cors: true
+    - http:
+        path: /user/{userName}
+        method: get
+        request:
+          parameters:
+            paths:
+              userName: true
+        cors: true
+  registerUser:
+    handler:  functions/registerUser.handle
+    memorySize: 4096
+    timeout: 30
+    events:
+    - http:
+        path: /user
+        method: post
+        request:
+          parameters:
+            headers:
+              id: true
+              username: true
+              name: true
+        cors: true
 
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+resources:
+  Resources:
+    UserDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${env:TABLE_NAME}
+        # キーの型を指定
+        AttributeDefinitions:
+          -
+            AttributeName: user_id
+            AttributeType: S
+          -
+            AttributeName: date
+            AttributeType: S
+        # キーの種類を指定（ハッシュorレンジキー）
+        KeySchema:
+          -
+            AttributeName: user_id # Partition key
+            KeyType: HASH
+          -
+            AttributeName: date #  Sort key
+            KeyType: RANGE
+        # プロビジョニングするキャパシティーユニットの設定
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
