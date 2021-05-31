@@ -57,6 +57,24 @@ custom:
     layersDeploymentBucket: ${env:LAYER_BUCKET}
 
 functions:
+  getUserList:
+    handler: functions/getUserList.handle
+    events:
+    - http:
+        path: /user
+        method: get
+        cors: true
+  getCountData:
+    handler: functions/getCountData.handle
+    events:
+    - http:
+        path: /count/{id}
+        method: get
+        request:
+          parameters:
+            paths:
+              id: true
+        cors: true
   getUserId:
     handler: functions/getUserId.handle
     events:
@@ -93,18 +111,18 @@ resources:
         # キーの型を指定
         AttributeDefinitions:
           -
-            AttributeName: user_id
+            AttributeName: type
             AttributeType: S
           -
-            AttributeName: date
+            AttributeName: id_date
             AttributeType: S
         # キーの種類を指定（ハッシュorレンジキー）
         KeySchema:
           -
-            AttributeName: user_id # Partition key
+            AttributeName: type # Partition key
             KeyType: HASH
           -
-            AttributeName: date #  Sort key
+            AttributeName: id_date #  Sort key
             KeyType: RANGE
         # プロビジョニングするキャパシティーユニットの設定
         ProvisionedThroughput:

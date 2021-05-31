@@ -21,3 +21,17 @@ exports.getResponseData = function(responseBody)
     body: JSON.stringify(responseBody)
   }
 }
+
+exports.getErrorResponseData = function(responseBody)
+{
+  return {
+    statusCode: 400,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+      'Access-Control-Allow-Headers' : 'Content-Type',
+    },
+    body: JSON.stringify(responseBody)
+  }
+}

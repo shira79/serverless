@@ -12,14 +12,14 @@ module.exports.handle = async (event) => {
   //既にuserが登録されているか確認
   var queryParams = {
     TableName: process.env['TABLE_NAME'],
-    KeyConditionExpression: "#user_id = :id and begins_with (#date, :user_prefix)",
+    KeyConditionExpression: "#type = :type and begins_with (#id_date, :id)",
     ExpressionAttributeNames:{
-      "#user_id": "user_id",
-      "#date": "date"
+      "#type": "type",
+      "#id_date": "id_date"
     },
     ExpressionAttributeValues: {
-      ":id": body.id,
-      ":user_prefix": "user#",
+      ":type": 'user',
+      ":id": body.id + '_',
     }
   };
 
@@ -35,8 +35,10 @@ module.exports.handle = async (event) => {
   var now = await dt.toFormat("YYYY-MM-DD-HH24-MI-SS");
 
   var putItem = {
-    user_id:body.id,
-    date:'user#' + now,
+    type:'user',
+    id_date: body.id + '_' + now,
+    id: body.id,
+    date: now,
     username:body.username,
     name:body.name,
   };
@@ -49,11 +51,10 @@ module.exports.handle = async (event) => {
   // put実行
   try {
     await dynamoClient.put(putParams).promise();
+    return utils.getResponseData({'item':putItem})
   }
   catch (e) {
     return utils.getResponseData("dynamo-put-error")
   }
-
-  return utils.getResponseData({'item':putItem})
 
 };

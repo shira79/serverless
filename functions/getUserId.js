@@ -15,12 +15,13 @@ module.exports.handle = async (event) => {
     }
   }
 
-  var userName = event.pathParameters.userName;
-  var url = 'https://api.twitter.com/2/users/by/username/' + userName;
+  if(event.pathParameters == undefined) return utils.getResponseData('username is undefined');
+
+  var url = 'https://api.twitter.com/2/users/by/username/' + event.pathParameters.userName;
 
   return axios.get(url, options)
   .then(function(response) {
-    return utils.getResponseData({content: response.data})
+    return utils.getResponseData(response.data.data)
   })
   .catch(function(error) {
     return utils.getResponseData(error)
