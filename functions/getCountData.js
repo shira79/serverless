@@ -1,12 +1,12 @@
 'use strict';
 
 module.exports.handle = async (event) => {
-  var AWS = require('aws-sdk');
+  let AWS = require('aws-sdk');
   const utils = require('./modules/utils');
 
-  var dynamoClient = new AWS.DynamoDB.DocumentClient({region:process.env['REGION']});
+  let dynamoClient = new AWS.DynamoDB.DocumentClient({region:process.env['REGION']});
 
-  var queryParams = {
+  let queryParams = {
     TableName: process.env['TABLE_NAME'],
     KeyConditionExpression: "#type = :type and begins_with (#id_date, :id)",
     ExpressionAttributeNames:{
@@ -19,9 +19,8 @@ module.exports.handle = async (event) => {
     }
   };
 
-
   try {
-    var queryResult = await dynamoClient.query(queryParams).promise();
+    let queryResult = await dynamoClient.query(queryParams).promise();
     return utils.getResponseData(queryResult)
   }
   catch (e) {

@@ -1,16 +1,16 @@
 'use strict';
 
 module.exports.handle = async (event) => {
-  var AWS = require('aws-sdk');
+  let AWS = require('aws-sdk');
   require('date-utils');
   const utils = require('./modules/utils');
 
-  var dynamoClient = new AWS.DynamoDB.DocumentClient({region:process.env['REGION']});
+  let dynamoClient = new AWS.DynamoDB.DocumentClient({region:process.env['REGION']});
 
-  var body = utils.getBody(event.body);
+  let body = utils.getBody(event.body);
 
   //既にuserが登録されているか確認
-  var queryParams = {
+  let queryParams = {
     TableName: process.env['TABLE_NAME'],
     KeyConditionExpression: "#type = :type and begins_with (#id_date, :id)",
     ExpressionAttributeNames:{
@@ -24,17 +24,17 @@ module.exports.handle = async (event) => {
   };
 
   //既に登録済みだったら、returnする
-  var queryResult = await dynamoClient.query(queryParams).promise();
+  let queryResult = await dynamoClient.query(queryParams).promise();
 
   if(queryResult.Count > 0){
     return utils.getResponseData("already registered")
   }
 
   //put用のデータを作成する
-  var dt = new Date();
-  var now = await dt.toFormat("YYYY-MM-DD-HH24-MI-SS");
+  let dt = new Date();
+  let now = dt.toFormat("YYYY-MM-DD-HH24-MI-SS");
 
-  var putItem = {
+  let putItem = {
     type:'user',
     id_date: body.id + '_' + now,
     id: body.id,
@@ -43,7 +43,7 @@ module.exports.handle = async (event) => {
     name:body.name,
   };
 
-  var putParams = {
+  let putParams = {
     TableName: process.env['TABLE_NAME'],
     Item: putItem
   };
