@@ -74,9 +74,7 @@ functions:
               userName: true
         cors: true
   registerUser:
-    handler:  functions/registerUser.handle
-    memorySize: 4096
-    timeout: 30
+    handler: functions/registerUser.handle
     events:
     - http:
         path: /user
@@ -89,7 +87,8 @@ functions:
               name: true
         cors: true
   storeCount:
-    handler:  functions/storeCount.handle
+    handler: functions/storeCount.handle
+    timeout: 15
     events:
     # 毎日、日本時間の午前3時に実行する
     - schedule: cron(0 18 * * ? *)

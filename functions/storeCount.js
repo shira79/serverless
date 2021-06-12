@@ -6,22 +6,23 @@ module.exports.handle = async (event) => {
   const utils = require('./modules/utils');
   require('date-utils');
 
-
   try {
     //ユーザーリストを取得
     let userList = await getUserList();
 
-    for (let user of userList.Items) {
+    //並列で登録処理を実行する
+    await Promise.all(userList.Items.map(async user => {
       let apiResponse = await getUserDataFromTwitter(user.id)
       let twitterUserData = apiResponse.data.data
-      await storeCountData(twitterUserData)
-    }
+      return storeCountData(twitterUserData)
+    }));
+
     return utils.getResponseData("done")
+
   }
   catch (e) {
     return utils.getResponseData(e)
   }
-
 
   /**
    * dynamoDBからuserのリストを取得する
