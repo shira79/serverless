@@ -1,30 +1,17 @@
-'use strict';
+'use strict'
 
 module.exports.handle = async (event) => {
-  let AWS = require('aws-sdk');
-  const utils = require('./modules/utils');
+  const utils = require('./modules/utils')
+  const DbManager = require('./modules/dbManager')
+  const DB = new DbManager()
 
-  let dynamoClient = new AWS.DynamoDB.DocumentClient({region:process.env['REGION']});
-
-  let queryParams = {
-    TableName: process.env['TABLE_NAME'],
-    KeyConditionExpression: "#type = :type",
-    ExpressionAttributeNames:{
-      "#type": "type",
-    },
-    ExpressionAttributeValues: {
-      ":type": 'user',
-    }
-  };
-
-  //あとでpagenationもするかも
-  // query実行
+  //あとでpaginationするかも
   try {
-    let queryResult = await dynamoClient.query(queryParams).promise();
-    return utils.getResponseData(queryResult)
+    let userList = await DB.getUserList()
+    return utils.getResponseData(userList)
   }
   catch (e) {
     return utils.getResponseData("dynamo-query-error")
   }
 
-};
+}

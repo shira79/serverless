@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 
 module.exports.handle = async (event) => {
-  const axios = require('axios');
-  const utils = require('./modules/utils');
+  const axios = require('axios')
+  const utils = require('./modules/utils')
 
-  let bearerToken = process.env['BEARER_TOKEN'];
+  let bearerToken = process.env['BEARER_TOKEN']
 
   const options =
   {
@@ -15,9 +15,9 @@ module.exports.handle = async (event) => {
     }
   }
 
-  if(event.pathParameters == undefined) return utils.getResponseData('username is undefined');
+  if(event.pathParameters == undefined) return utils.getResponseData('username is undefined')
 
-  let url = 'https://api.twitter.com/2/users/by/username/' + event.pathParameters.userName;
+  let url = 'https://api.twitter.com/2/users/by/username/' + event.pathParameters.userName + '?user.fields=profile_image_url'
 
   return axios.get(url, options)
   .then(function(response) {
@@ -25,6 +25,6 @@ module.exports.handle = async (event) => {
   })
   .catch(function(error) {
     return utils.getResponseData(error)
-  });
+  })
 
-};
+}

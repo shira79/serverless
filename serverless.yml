@@ -90,8 +90,8 @@ functions:
     handler: functions/storeCount.handle
     timeout: 15
     events:
-    # 毎日、日本時間の午前3時に実行する
-    - schedule: cron(0 18 * * ? *)
+    # 毎日、日本時間の午前0時に実行する
+    - schedule: cron(0 15 * * ? *)
 
 resources:
   Resources:

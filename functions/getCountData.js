@@ -1,30 +1,16 @@
-'use strict';
+'use strict'
 
 module.exports.handle = async (event) => {
-  let AWS = require('aws-sdk');
-  const utils = require('./modules/utils');
-
-  let dynamoClient = new AWS.DynamoDB.DocumentClient({region:process.env['REGION']});
-
-  let queryParams = {
-    TableName: process.env['TABLE_NAME'],
-    KeyConditionExpression: "#type = :type and begins_with (#id_date, :id)",
-    ExpressionAttributeNames:{
-      "#type": "type",
-      "#id_date": "id_date"
-    },
-    ExpressionAttributeValues: {
-      ":type": 'count',
-      ":id": event.pathParameters.id + '_',
-    }
-  };
+  const utils = require('./modules/utils')
+  const DbManager = require('./modules/dbManager')
+  const DB = new DbManager()
 
   try {
-    let queryResult = await dynamoClient.query(queryParams).promise();
-    return utils.getResponseData(queryResult)
+    let result = await DB.getCountData(event.pathParameters.id)
+    return utils.getResponseData(result)
   }
   catch (e) {
     return utils.getResponseData("dynamo-query-error")
   }
 
-};
+}
