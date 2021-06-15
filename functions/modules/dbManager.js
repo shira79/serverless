@@ -78,7 +78,8 @@ class DbManager{
    * @param body
    */
   storeUser(body){
-    let dt = new Date()
+    //日本時間にする
+    let dt = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
     let now = dt.toFormat("YYYY-MM-DD-HH24-MI-SS")
 
     let putItem = {
@@ -109,7 +110,7 @@ class DbManager{
     let twitterUserData = apiResponse.data.data
 
     //put用のデータを作成する
-    let dt = new Date()
+    let dt = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
     let now = dt.toFormat("YYYY-MM-DD-HH24-MI-SS")
 
     let putItem = {
