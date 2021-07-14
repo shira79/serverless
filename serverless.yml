@@ -20,6 +20,7 @@ provider:
         - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
+        - dynamodb:UpdateItem
         - logs:CreateLogGroup
         - logs:CreateLogStream
         - logs:PutLogEvents
@@ -86,8 +87,13 @@ functions:
               username: true
               name: true
         cors: true
-  storeCount:
-    handler: functions/storeCount.handle
+  storeCounts:
+    handler: functions/storeCounts.handle
+    timeout: 15
+    events:
+    - schedule: cron(0 15 * * ? *)
+  updateUsers:
+    handler: functions/updateUsers.handle
     timeout: 15
     events:
     - schedule: cron(0 15 * * ? *)

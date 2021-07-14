@@ -101,7 +101,7 @@ class DbManager{
   }
 
   /**
-   * twitterのユーザーデータをdynamoDBに保存する
+   * twitterのカウントデータをdynamoDBに保存する
    *
    * @param string id
    */
@@ -135,6 +135,41 @@ class DbManager{
     }
 
     return this.dynamoClient.put(putParams).promise()
+  }
+
+  /**
+   * twitterのユーザーデータを更新する
+   *
+   * @param string id
+   */
+  async storeUserData(id){
+    let apiResponse = await this.getUserDataFromTwitter(id)
+    let twitterUserData = apiResponse.data.data
+
+    //update用のデータを作成する
+    var updateParams = {
+      TableName: process.env['TABLE_NAME'],
+      Key:{
+          'type': 'user',
+          'id_date': id + '_'
+      },
+      UpdateExpression: "set #username=:username, #name=:name, #profile_image_url=:profile_image_url, #description=:description",
+      ExpressionAttributeNames:{
+        "#username":"username",
+        "#name":"name",
+        "#profile_image_url":"profile_image_url",
+        "#description":"description"
+      },
+      ExpressionAttributeValues:{
+          ":username":twitterUserData.username,
+          ":name":twitterUserData.name,
+          ":profile_image_url":twitterUserData.profile_image_url.replace("_normal.", "."),
+          ":description":twitterUserData.description,
+      },
+      ReturnValues:"UPDATED_NEW"
+    }
+
+    return this.dynamoClient.update(updateParams).promise()
   }
 
   /**
