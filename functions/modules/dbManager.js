@@ -109,6 +109,12 @@ class DbManager{
     let apiResponse = await this.getUserDataFromTwitter(id)
     let twitterUserData = apiResponse.data.data
 
+    // ユーザーデータが取得できなければ終了
+    if(twitterUserData == undefined){
+      console.log(id + 'がidのデータを取得できません')
+      return
+    }
+
     //put用のデータを作成する
     let dt = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
     let now = dt.toFormat("YYYY-MM-DD-HH24-MI-SS")
@@ -145,6 +151,12 @@ class DbManager{
   async storeUserData(id){
     let apiResponse = await this.getUserDataFromTwitter(id)
     let twitterUserData = apiResponse.data.data
+
+    // ユーザーデータが取得できなければ終了
+    if(twitterUserData == undefined){
+      console.log(id + 'がidのデータを取得できません')
+      return
+    }
 
     //update用のデータを作成する
     var updateParams = {

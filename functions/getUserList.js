@@ -11,6 +11,7 @@ module.exports.handle = async (event) => {
     return utils.getResponseData(userList)
   }
   catch (e) {
+    console.log(e)
     return utils.getResponseData("dynamo-query-error")
   }
 

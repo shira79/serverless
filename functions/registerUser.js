@@ -15,6 +15,7 @@ module.exports.handle = async (event) => {
     }
   }
   catch (e) {
+    console.log(e)
     return utils.getResponseData("dynamo-query-error")
   }
 
@@ -25,6 +26,7 @@ module.exports.handle = async (event) => {
     return utils.getResponseData({id:body.id})
   }
   catch (e) {
+    console.log(e)
     return utils.getResponseData("dynamo-put-error")
   }
 

@@ -18,6 +18,7 @@ module.exports.handle = async (event) => {
 
   }
   catch (e) {
+    console.log(e)
     return utils.getResponseData({error:e})
   }
 

@@ -5,9 +5,11 @@
   "dependencies": {
     "aws-sdk": "^2.909.0",
     "axios": "^0.21.1",
-    "date-utils": "^1.2.21"
+    "date-utils": "^1.2.21",
+    "serverless-dotenv-plugin": "^4.0.1",
+    "serverless-offline": "^9.0.0"
   },
   "devDependencies": {
-    "serverless-layers": "^2.3.3"
+    "serverless-layers": "^2.5.4"
   }
 }
