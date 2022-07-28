@@ -53,7 +53,6 @@ functions:
     - http:
         path: /user
         method: get
-        cors: true
   getCountData:
     handler: functions/getCountData.handle
     events:
@@ -64,7 +63,6 @@ functions:
           parameters:
             paths:
               id: true
-        cors: true
   getUserId:
     handler: functions/getUserId.handle
     events:
@@ -75,20 +73,31 @@ functions:
           parameters:
             paths:
               userName: true
-        cors: true
   registerUser:
     handler: functions/registerUser.handle
     events:
     - http:
         path: /user
         method: post
+        #TODO 以下のようなエラーメッセージが発生したので臨時で、requireの制限を無くす
+        #TODO Missing required request parameters: [name, id, username]
         request:
           parameters:
             headers:
-              id: true
-              username: true
-              name: true
-        cors: true
+              id: false
+              username: false
+              name: false
+        cors:
+          origin: ${env:ALLOW_ORIGIN}
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
   storeCounts:
     handler: functions/storeCounts.handle
     timeout: 15
